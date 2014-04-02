@@ -26,8 +26,9 @@
         <runcommandpicklist>
           <runcommandpicklistitem>"${OUTPUT_PATH}"</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" 127.0.0.1 9999</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" 10.3.20.161 9999</runcommandpicklistitem>
         </runcommandpicklist>
-        <runcommand>"${OUTPUT_PATH}" 127.0.0.1 9999</runcommand>
+        <runcommand>"${OUTPUT_PATH}" 10.3.20.161 9999</runcommand>
         <rundir></rundir>
         <buildfirst>true</buildfirst>
         <terminal-type>0</terminal-type>

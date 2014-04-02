@@ -66,9 +66,9 @@ int main(int argc, char** argv) {
     if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, server_sock, &ev) == -1) {
         exit(1);
     }
-    
+    int loop = 0;
     while (is_running) {
-        fprintf(stderr, "Wait for event\n");
+        fprintf(stderr, "Wait for event %d\n", loop ++);
         int epoll_event_num = epoll_wait(epoll_fd, events, 1024, -1);
         fprintf(stderr, "%d events\n", epoll_event_num);
         for (int i = 0;i < epoll_event_num; ++i) {

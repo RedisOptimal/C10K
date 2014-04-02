@@ -16,13 +16,9 @@
 #include "arpa/inet.h"
 using namespace std;
 
-#define MAX_THREAD 1
-
 void* pthread_func(void *);
 
 void Usage(char **);
-
-pthread_mutex_t global_lock = PTHREAD_MUTEX_INITIALIZER;
 
 int main(int argc, char** argv) {
     if (argc < 3) {
@@ -36,49 +32,34 @@ int main(int argc, char** argv) {
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons(port);
     server_addr.sin_addr.s_addr = inet_addr(argv[1]);
-    
-    pthread_t threads[MAX_THREAD];
-    for (int i = 0;i < MAX_THREAD; ++i) {
-        if (pthread_create(threads + i, NULL, pthread_func, &server_addr) == -1) {
-            perror("Can't create thread");
-        }
-        
-    }
-    
-    
-    for (int i = 0;i < MAX_THREAD; ++i) {
-        pthread_join(threads[i], NULL);
-    }
+
+    pthread_func(&server_addr);
+    puts("ALL DONE");
     return 0;
 }
 
 void *pthread_func(void *arg) {
-    //sleep(rand() % 100);
     int client_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (client_fd == -1) {
         perror("Create socket failed.");
-        pthread_exit(NULL);
     }
     if (connect(client_fd, (struct sockaddr *)arg, sizeof(struct sockaddr)) == -1) {
         perror("Can't connect server.");
-        pthread_exit(NULL);
     }
     for (int i = 0;i < 1000; ++i) {
         char buffer[1024];
         const char msg[] = "Thisisatest";
         strcpy(buffer, msg);
-        //sleep(rand() % 100);
-        pthread_mutex_lock(&global_lock);
         if (write(client_fd, buffer, strlen(buffer)) == -1) {
             perror("Write failed.");
         }
+        puts("SEND OK");
         if (read(client_fd, buffer, sizeof(buffer)) == -1) {
             perror("Read failed.");
-        }
-        pthread_mutex_unlock(&global_lock);
-        
+        }    
+        puts("RECV OK");
     }
-    pthread_exit(NULL);
+    close(client_fd);
 }
 
 void Usage(char **argv) {
